@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>红明谷2023 WEB</title>
+      <link href="/2023/04/23/%E7%BA%A2%E6%98%8E%E8%B0%B72023%20WEB/"/>
+      <url>/2023/04/23/%E7%BA%A2%E6%98%8E%E8%B0%B72023%20WEB/</url>
+      
+        <content type="html"><![CDATA[<p>开赛时间对社畜来说实在是太不友好了，趁着中午饭空摸鱼做了几道。</p><h1 id="点击签到"><a href="#点击签到" class="headerlink" title="点击签到"></a>点击签到</h1><p>按照hint “题目内容：每一次点击都是为了让你更接近flag！” 去点击网页按钮，待所有字符输出完毕后得到flag。</p><h1 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h1><h2 id="0x1-Dreamer"><a href="#0x1-Dreamer" class="headerlink" title="0x1 Dreamer"></a>0x1 Dreamer</h2><p>题目是一个CMS框架(v4.0版本)，该版本存在“后台附件管理处存在任意文件下载”漏洞，题目hint给了flag路径，则通过该漏洞可以下载得到flag文件。</p><h3 id="0、漏洞分析"><a href="#0、漏洞分析" class="headerlink" title="0、漏洞分析"></a>0、漏洞分析</h3><p>题目给了源码，后台的附件功能<code>src/main/java/cc/iteachyou/cms/controller/admin/AttachmentController.java</code>74行，上传附件时未对附件做任何处理。</p><img src="image-20230419152819790.png" alt="image-20230419152819790" style="zoom:50%;" /><p>该文件115行，下载时访问文件路径直接进行了路径拼接，因此产生了漏洞。</p><img src="image-20230419152627781.png" alt="image-20230419152627781" style="zoom:50%;" /><h3 id="1、登录后台-附件管理"><a href="#1、登录后台-附件管理" class="headerlink" title="1、登录后台-附件管理"></a>1、登录后台-附件管理</h3><p>根据题目给的源码，README.md给出了后台管理员账号：wangjn:123456。</p><p>找到“附件管理功能”，上传任意附件。</p><img src="image-20230419151628565.png" alt="image-20230419151628565" style="zoom:50%;" /><h3 id="2、修改上传文件路径"><a href="#2、修改上传文件路径" class="headerlink" title="2、修改上传文件路径"></a>2、修改上传文件路径</h3><p>选择附件后，在点击“确认”按钮前进行抓包，修改filePath为flag路径，放包。</p><img src="image-20230419151916555.png" alt="image-20230419151916555" style="zoom:50%;" /><img src="image-20230419152049283.png" alt="image-20230419152049283" style="zoom:50%;" /><h3 id="3、下载文件"><a href="#3、下载文件" class="headerlink" title="3、下载文件"></a>3、下载文件</h3><p>下载新上传的文件，得到flag。</p><img src="image-20230419152156759.png" alt="image-20230419152156759" style="zoom:50%;" /><img src="image-20230419152227500.png" alt="image-20230419152227500" style="zoom:50%;" /><h2 id="0x2-Dreamer-revenge"><a href="#0x2-Dreamer-revenge" class="headerlink" title="0x2 Dreamer_revenge"></a>0x2 Dreamer_revenge</h2><p>因为题目代码同Dreamer，漏洞一样，但是题目没有给flag位置，应该需要getshell找到flag位置。</p><h3 id="1、后台模板管理任意编辑导致路径穿越"><a href="#1、后台模板管理任意编辑导致路径穿越" class="headerlink" title="1、后台模板管理任意编辑导致路径穿越"></a>1、后台模板管理任意编辑导致路径穿越</h3><h4 id="1-漏洞分析"><a href="#1-漏洞分析" class="headerlink" title="1) 漏洞分析"></a>1) 漏洞分析</h4><p><code>src/main/java/cc/iteachyou/cms/controller/admin/TemplateController.java</code>第161行，利用<code>templateFile.getCanonicalPath().startsWith(themeDir.getCanonicalPath())</code>判断文件权限，getCanonicalPath返回的是文件绝对路径，将路径中包含“.”或“..”等当前路径及上层路径表示法，会从路径名中删除“.”和“..”使用真实路径代替，即存在路径穿越问题。</p><img src="image-20230423114014067.png" alt="image-20230423114014067" style="zoom:50%;" /><h4 id="2-漏洞利用"><a href="#2-漏洞利用" class="headerlink" title="2) 漏洞利用"></a>2) 漏洞利用</h4><p><code>src\main\resources\db\dreamer-cms\templates</code>复制<code>default_v2</code>目录修改成<code>default_v3</code>，把v3的<code>theme.json</code>其中的<code>themePath</code>值修改成<code>../../../../../../../../../../../../../../</code>。打包<code>default_v3</code>成<code>default_v3.zip</code>，到后台风格管理处上传zip文件并启用主题，再到模板管理处就可以看到目录下的文件了。</p><h4 id="3-找flag文件"><a href="#3-找flag文件" class="headerlink" title="3) 找flag文件"></a>3) 找flag文件</h4><p>因为没有flag路径，只能一个文件一个文件打开查找flag。</p><p>（由于时间原因，没有找完所有的文件，而且如果flag在隐藏文件中也无法找到，同时这个办法很笨，服务器上文件太多了。</p><p>flag在<code>访问环境变量/proc/1/environ </code>）</p><h3 id="2、后台压缩校验不正确导致Getshell"><a href="#2、后台压缩校验不正确导致Getshell" class="headerlink" title="2、后台压缩校验不正确导致Getshell"></a>2、后台压缩校验不正确导致Getshell</h3><h4 id="1-漏洞分析-1"><a href="#1-漏洞分析-1" class="headerlink" title="1) 漏洞分析"></a>1) 漏洞分析</h4><p><code>src/main/java/cc/iteachyou/cms/utils/ZipUtils.java</code>将*换成&#x2F;，如果文件构造路径<code>..*..*..*..*..*..*..*..*..*etc/passwd</code>经过replace得到<code>../../../../../../../../../etc/passwd</code>，造成路径穿越。</p><img src="image-20230423115304098.png" alt="image-20230423115304098" style="zoom:50%;" /><h4 id="2-漏洞利用-写定时任务"><a href="#2-漏洞利用-写定时任务" class="headerlink" title="2) 漏洞利用-写定时任务"></a>2) 漏洞利用-写定时任务</h4><p>但是服务器没有开定时任务，利用失败。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> WEB </tag>
+            
+            <tag> CTF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>php-smarty模版注入RCE</title>
       <link href="/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/"/>
       <url>/2022/10/28/php-smarty%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5RCE/</url>
