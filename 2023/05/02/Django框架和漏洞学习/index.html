@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="遵循MVC框架（Model，数据模型，后端数据库和处理；View，接受请求，处理Model，渲染；C：模板） 0x1 搭建1、直接使用pycharm进行创建，create Django 项目，在搭建过程中，运行python manager.py runserver，出现NameError: name &#39;os&#39; is not defined错误，解决方式是根目录的setting.py">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django 框架和漏洞学习">
+<meta property="og:url" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="WhiteBai的博客">
+<meta property="og:description" content="遵循MVC框架（Model，数据模型，后端数据库和处理；View，接受请求，处理Model，渲染；C：模板） 0x1 搭建1、直接使用pycharm进行创建，create Django 项目，在搭建过程中，运行python manager.py runserver，出现NameError: name &#39;os&#39; is not defined错误，解决方式是根目录的setting.py">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230312182125317.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230312235935868.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230314222357211.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230328143548394.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230328144449490.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230328151248029.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230328154948564.png">
+<meta property="og:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230406203154011.png">
+<meta property="article:published_time" content="2023-05-02T04:06:45.000Z">
+<meta property="article:modified_time" content="2023-05-03T07:25:39.880Z">
+<meta property="article:author" content="White Bai">
+<meta property="article:tag" content="WEB">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/image-20230312182125317.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Django 框架和漏洞学习</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/23/%E7%BA%A2%E6%98%8E%E8%B0%B72023%20WEB/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&text=Django 框架和漏洞学习"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&is_video=false&description=Django 框架和漏洞学习"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Django 框架和漏洞学习&body=Check out this article: http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&name=Django 框架和漏洞学习&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&t=Django 框架和漏洞学习"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">0x1 搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E9%87%8D%E8%A6%81%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">0x2 重要文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E6%A0%91"><span class="toc-number">2.1.</span> <span class="toc-text">目录树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.2.</span> <span class="toc-text">常用命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">0x3 重要函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#path"><span class="toc-number">3.1.</span> <span class="toc-text">path</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-CVE"><span class="toc-number">4.</span> <span class="toc-text">0x4 CVE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81V-lt-2-0-8-%E4%BB%BB%E6%84%8FURL%E8%B7%B3%E8%BD%AC%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-14574%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">1、V&lt;2.0.8 任意URL跳转漏洞（CVE-2018-14574）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81postgresql-JSONField-x2F-HStoreField-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2019-14234%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">2、postgresql-JSONField&#x2F;HStoreField SQL注入漏洞（CVE-2019-14234）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81Oracle-GIS-tolerance-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2020-9402%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">3、Oracle-GIS-tolerance SQL注入漏洞（CVE-2020-9402）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81QuerySet-order-by-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-35042%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">4、QuerySet.order_by() SQL注入漏洞（CVE-2021-35042）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81Trunc-kind-and-Extract-lookup-name-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2022-34265%EF%BC%89"><span class="toc-number">4.5.</span> <span class="toc-text">5、Trunc(kind) and Extract(lookup_name) SQL注入漏洞（CVE-2022-34265）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81postgresql-StringAgg-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2020-7471%EF%BC%89"><span class="toc-number">4.6.</span> <span class="toc-text">6、postgresql-StringAgg SQL注入漏洞（CVE-2020-7471）</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Django 框架和漏洞学习
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">White Bai</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-05-02T04:06:45.000Z" itemprop="datePublished">2023-05-02</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Python/" rel="tag">Python</a>, <a class="tag-link-link" href="/tags/WEB/" rel="tag">WEB</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>遵循MVC框架（Model，数据模型，后端数据库和处理；View，接受请求，处理Model，渲染；C：模板）</p>
+<h2 id="0x1-搭建"><a href="#0x1-搭建" class="headerlink" title="0x1 搭建"></a>0x1 搭建</h2><p>1、直接使用pycharm进行创建，create Django 项目，在搭建过程中，运行<code>python manager.py runserver</code>，出现<code>NameError: name &#39;os&#39; is not defined</code>错误，解决方式是根目录的<code>setting.py</code>中主动<code>import os</code>，重新runserver即可；</p>
+<p>2、子应用中有URLconfs，通过<code>include(module)</code>进行引用</p>
+<h2 id="0x2-重要文件"><a href="#0x2-重要文件" class="headerlink" title="0x2 重要文件"></a>0x2 重要文件</h2><h3 id="目录树"><a href="#目录树" class="headerlink" title="目录树"></a>目录树</h3><img src="image-20230312182125317.png" alt="image-20230312182125317" style="zoom:50%;" />
+
+<p>django-admin</p>
+<p>manage.py：包含项目设置，setdefault 项目名.settings</p>
+<p>settings.py：项目具体设置，其中INSTALLED_APPS含appName</p>
+<ul>
+<li>Model:最本质的作用是生成SQL语句</li>
+</ul>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver</span><br><span class="line">python manage.py startapp [appName]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">模型，数据库结构设计和附加的其他元数据。（需要setting.py进行app注册）</span><br><span class="line"></span><br><span class="line">创建数据库及表和字段：</span><br><span class="line">    python manager.py makemigrations [xxapp] -&gt; 迁移是Django对模型定义（即数据库结构）变化的存储形式</span><br><span class="line">    python manager.py migrate -&gt; 执行所有没有迁移的操作，即将对模型的更改应用到数据库中</span><br><span class="line"></span><br><span class="line">python manager.py sqlmigrate [xxapp] -&gt;  sqlmigrate 命令并没有真正在你的数据库中的执行迁移 - 相反，它只是把命令输出到屏幕上，让你看看 Django 认为需要执行哪些 SQL 语句。这在你想看看 Django 到底准备做什么，或者当你是数据库管理员，需要写脚本来批量处理数据库时会很有用</span><br><span class="line"></span><br><span class="line">=》</span><br><span class="line">改变模型三步：</span><br><span class="line">    编辑 models.py 文件，改变模型。</span><br><span class="line">    运行 python manage.py makemigrations 为模型的改变生成迁移文件。</span><br><span class="line">    运行 python manage.py migrate 来应用数据库迁移。</span><br><span class="line">    </span><br><span class="line">导入数据库</span><br><span class="line">		python manage.py loaddata collection.json (collection.json与manage.py在一个目录下)</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x3-重要函数"><a href="#0x3-重要函数" class="headerlink" title="0x3 重要函数"></a>0x3 重要函数</h2><h3 id="path"><a href="#path" class="headerlink" title="path"></a>path</h3><p>path(route, view,kwargs,name)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">urlpatterns = [</span><br><span class="line">    path(&#x27;admin/&#x27;, admin.site.urls),</span><br><span class="line">    path(&#x27;mytestapp/&#x27;, include(&#x27;mytestapp.urls&#x27;)),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>route：路由，谁去匹配url</li>
+<li>view：寻找指定的view，调用该函数，传入HttpRequest对象作为第一个参数</li>
+</ul>
+<h2 id="0x4-CVE"><a href="#0x4-CVE" class="headerlink" title="0x4 CVE"></a>0x4 CVE</h2><p><em>Django漏洞的poc可参考修复版本的test</em></p>
+<h3 id="1、V-lt-2-0-8-任意URL跳转漏洞（CVE-2018-14574）"><a href="#1、V-lt-2-0-8-任意URL跳转漏洞（CVE-2018-14574）" class="headerlink" title="1、V&lt;2.0.8 任意URL跳转漏洞（CVE-2018-14574）"></a>1、V&lt;2.0.8 任意URL跳转漏洞（CVE-2018-14574）</h3><p>1）漏洞成因</p>
+<p>根据网上漏洞成因分析，找到关键字词字符串<code>grep -r &quot;CommonMiddleware&quot; ./</code>，定位到<code>/middleware/common.py</code>的<code>class CommonMiddleware</code>用于补全url路径，其中<code>def process_request</code>的<code>return self.response_redirect_class(redirect_url)</code>即<code>HttpResponsePermanentRedirect</code>重定向url时没有过滤绝对路径，导致任意url跳转。</p>
+<img src="image-20230312235935868.png" alt="image-20230312235935868" style="zoom:50%;" />
+
+<img src="image-20230314222357211.png" alt="image-20230314222357211" style="zoom: 40%;" />
+
+<p>2）利用方式</p>
+<p>若1，则2需成立，那么分支要进入3，即url最后没有斜杠slash；同时301跳转，构造的path需要绝对路径，即<a target="_blank" rel="noopener" href="http://host//new_path">http://host//new_path</a></p>
+<p>3）利用条件</p>
+<p>版本（默认使用该中间件且APPEND_SLASH默认为True）</p>
+<p>4）修复</p>
+<p>调用<code>escape_leading_slashes(new_path)</code>函数，去掉多余的<a target="_blank" rel="noopener" href="https://github.com/django/django/commit/6fffc3c6d420e44f4029d5643f38d00a39b08525#diff-ecd72d5e5c6a5496735ace4b936d519f89699baff8d932b908de0b598c58f662">反斜杠</a></p>
+<p>5）xray poc</p>
+<p>虽然xray官方说已经集成在30x的功能中，但实测并未检测到该漏洞，因此自己编写了poc</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">poc-yaml-cve-2018-14574-open-redirect</span></span><br><span class="line"><span class="attr">transport:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">rules:</span></span><br><span class="line">  <span class="attr">r1:</span></span><br><span class="line">    <span class="attr">request:</span></span><br><span class="line">      <span class="attr">method:</span> <span class="string">GET</span></span><br><span class="line">      <span class="attr">path:</span> <span class="string">//bing.com</span></span><br><span class="line">      <span class="attr">follow_redirects:</span> <span class="literal">false</span> <span class="comment"># get方式默认为true，即运行跳转，因此这里必须为false，即跳转是非法的行为</span></span><br><span class="line">    <span class="attr">expression:</span> <span class="string">response.status==301</span> <span class="string">&amp;&amp;</span> <span class="string">response.headers[&quot;location&quot;].contains(&quot;//bing.com/&quot;)</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">expression:</span> <span class="string">r1()</span></span><br><span class="line"><span class="attr">detail:</span></span><br><span class="line">  <span class="attr">author:</span> <span class="string">whitebai</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;https://github.com/vulhub/vulhub/tree/master/django/CVE-2018-14574&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、postgresql-JSONField-x2F-HStoreField-SQL注入漏洞（CVE-2019-14234）"><a href="#2、postgresql-JSONField-x2F-HStoreField-SQL注入漏洞（CVE-2019-14234）" class="headerlink" title="2、postgresql-JSONField&#x2F;HStoreField SQL注入漏洞（CVE-2019-14234）"></a>2、postgresql-JSONField&#x2F;HStoreField SQL注入漏洞（CVE-2019-14234）</h3><p>1）环境搭建</p>
+<p>django 2.2.3 + postgresql 14.7 + pycharm 2018</p>
+<p>Note:</p>
+<ul>
+<li><p>Pycharm的Django版本与漏洞复现版本不一致 -&gt; <code>pip install Django==xxx</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/294285">postgresql 搭建</a></p>
+</li>
+<li><p>Error:</p>
+<ul>
+<li>pycharm： <code>Error encountered when performing Introspect database testdb schema public (details): ERROR: column t.relhasoids does not exist   位置：135.</code> -&gt; 解决：pycharm database -&gt; 有个🔧的图标 -&gt; options -&gt; 勾选”Introspect using JDBC metadata”</li>
+<li>admin后台登入时<code>[AssertionError: database connection isn&#39;t set to UTC](https://stackoverflow.com/questions/68024060/assertionerror-database-connection-isnt-set-to-utc)</code> -&gt; 解决： <code>pip install psycopg2==2.8.6</code>or<code>pip install psycopg2-binary==2.8.6</code></li>
+</ul>
+</li>
+<li><p>导入json数据：<code>python manage.py loaddata collection.json</code> (collection.json与manage.py在一个目录下)</p>
+</li>
+<li><blockquote>
+<p>Pycharm debug 断点不生效：参考网上的<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhouzhiwengang/article/details/119576534">教程</a>，debug后不在breakpoint处stop，折腾半天，发现是项目采用 Pycharm 的 DjangoServer 运行，直接下断点调试即可，不需要新建 python configuration。<img src="image-20230328143548394.png" alt="image-20230328143548394" style="zoom: 33%;" /></p>
+<p>这个问题折腾了一晚上……</p>
+</blockquote>
+</li>
+</ul>
+<p>2）漏洞分析</p>
+<p>ref：</p>
+<p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/django-jsonfield-cve-2019-14234.html">https://www.leavesongs.com/PENETRATION/django-jsonfield-cve-2019-14234.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sijidou/p/13121288.html">https://www.cnblogs.com/sijidou/p/13121288.html</a></p>
+<p>（1）漏洞成因</p>
+<p>postgresql 的 JsonField，transform “键” 去lookup value 时，键直接拼接在where 语句中。</p>
+<img src="image-20230328144449490.png" alt="image-20230328144449490" style="zoom:50%;" />
+
+<p>（2）利用</p>
+<p>“控制查询的键”</p>
+<p>Note：</p>
+<p>p神blog里所谓的django admin 具有 “用户控制queryset的查询键名”，在<code>django/contrib/admin/views/main.py</code>402行。</p>
+<img src="image-20230328151248029.png" alt="image-20230328151248029" style="zoom:50%;" />
+
+<p>（3）修复</p>
+<img src="image-20230328154948564.png" alt="image-20230328154948564" style="zoom:50%;" />
+
+<p>Key_name 用 数组表示，则a’b -&gt; [‘a’,’b’] (postgresql 特性)</p>
+<h3 id="3、Oracle-GIS-tolerance-SQL注入漏洞（CVE-2020-9402）"><a href="#3、Oracle-GIS-tolerance-SQL注入漏洞（CVE-2020-9402）" class="headerlink" title="3、Oracle-GIS-tolerance SQL注入漏洞（CVE-2020-9402）"></a>3、Oracle-GIS-tolerance SQL注入漏洞（CVE-2020-9402）</h3><p>参考<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7403">这篇文章</a>。</p>
+<p>但是根据<a target="_blank" rel="noopener" href="https://github.com/django/django/commit/fe886a3b58a93cfbe8864b485f93cb6d426cd1f2">官方修复</a>其实可以很明显看到漏洞存在的位置 -&gt; GIS功能的tolerance可控；并且根据test.py可以得到payload-&gt;闭合右括号。</p>
+<p>修复：用Value()包含参数，去识别是否是int</p>
+<h3 id="4、QuerySet-order-by-SQL注入漏洞（CVE-2021-35042）"><a href="#4、QuerySet-order-by-SQL注入漏洞（CVE-2021-35042）" class="headerlink" title="4、QuerySet.order_by() SQL注入漏洞（CVE-2021-35042）"></a>4、QuerySet.order_by() SQL注入漏洞（CVE-2021-35042）</h3><p>Django内置了ORM框架，从数据库查询出来的结果是一个QuerySet合集。其中的order_by方法，会将查询出来的结果按照某字段的值，由小到大或由大到小进行排序，漏洞就出现在add_ordering的时候：<a target="_blank" rel="noopener" href="https://github.com/django/django/commit/a34a5f724c5d5adb2109374ba3989ebb7b11f81f%E3%80%82">https://github.com/django/django/commit/a34a5f724c5d5adb2109374ba3989ebb7b11f81f。</a></p>
+<p>漏洞原理是Django对数据的容忍度过高导致当识别table.column时，未进行恶意输入的处理，导致直接执行line_1980 continue，跳过后面的列检查，直接执行到line_2002 进行orderby的拼接。</p>
+<img src="image-20230406203154011.png" alt="image-20230406203154011" style="zoom:50%;" />
+
+<p>官方的修复方法是增加<code>if &#39;.&#39; in item and ORDER_PATTERN.match(item)</code>，其中<code>ORDER_PATTERN = _lazy_re_compile(r&#39;[-+]?[.\w]+$&#39;)</code>，即当table.col符合严格的格式时，才接收和处理。</p>
+<p>ref：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9834">https://xz.aliyun.com/t/9834</a></p>
+<h3 id="5、Trunc-kind-and-Extract-lookup-name-SQL注入漏洞（CVE-2022-34265）"><a href="#5、Trunc-kind-and-Extract-lookup-name-SQL注入漏洞（CVE-2022-34265）" class="headerlink" title="5、Trunc(kind) and Extract(lookup_name) SQL注入漏洞（CVE-2022-34265）"></a>5、Trunc(kind) and Extract(lookup_name) SQL注入漏洞（CVE-2022-34265）</h3><p>漏洞存在于Django ORM日期函数Trunc、Extract的时间参数。和之前几个sql漏洞一样，没有进行过滤，直接sql语句拼接导致漏洞执行。</p>
+<p>ref：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/11628#toc-2">https://xz.aliyun.com/t/11628#toc-2</a></p>
+<p>漏洞本身的复现和调试与前几个sql漏洞差别不大，需要注意的是，由于Django支持非常多的数据库，不同数据库下漏洞的poc、是否能利用是不一样的。</p>
+<h3 id="6、postgresql-StringAgg-SQL注入漏洞（CVE-2020-7471）"><a href="#6、postgresql-StringAgg-SQL注入漏洞（CVE-2020-7471）" class="headerlink" title="6、postgresql-StringAgg SQL注入漏洞（CVE-2020-7471）"></a>6、postgresql-StringAgg SQL注入漏洞（CVE-2020-7471）</h3><p>使用了StringAgg聚合函数，用户可控其delimiter参数进行查询时，在其位置注入SQL语句。</p>
+<p>该漏洞复现可参考前几个漏洞，该漏洞vulhub没有，自己提交了pr：<a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/pull/424">https://github.com/vulhub/vulhub/pull/424</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">0x1 搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E9%87%8D%E8%A6%81%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">0x2 重要文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E6%A0%91"><span class="toc-number">2.1.</span> <span class="toc-text">目录树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.2.</span> <span class="toc-text">常用命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">0x3 重要函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#path"><span class="toc-number">3.1.</span> <span class="toc-text">path</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-CVE"><span class="toc-number">4.</span> <span class="toc-text">0x4 CVE</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81V-lt-2-0-8-%E4%BB%BB%E6%84%8FURL%E8%B7%B3%E8%BD%AC%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-14574%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">1、V&lt;2.0.8 任意URL跳转漏洞（CVE-2018-14574）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81postgresql-JSONField-x2F-HStoreField-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2019-14234%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">2、postgresql-JSONField&#x2F;HStoreField SQL注入漏洞（CVE-2019-14234）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81Oracle-GIS-tolerance-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2020-9402%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">3、Oracle-GIS-tolerance SQL注入漏洞（CVE-2020-9402）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81QuerySet-order-by-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-35042%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">4、QuerySet.order_by() SQL注入漏洞（CVE-2021-35042）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81Trunc-kind-and-Extract-lookup-name-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2022-34265%EF%BC%89"><span class="toc-number">4.5.</span> <span class="toc-text">5、Trunc(kind) and Extract(lookup_name) SQL注入漏洞（CVE-2022-34265）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81postgresql-StringAgg-SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2020-7471%EF%BC%89"><span class="toc-number">4.6.</span> <span class="toc-text">6、postgresql-StringAgg SQL注入漏洞（CVE-2020-7471）</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&text=Django 框架和漏洞学习"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&is_video=false&description=Django 框架和漏洞学习"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Django 框架和漏洞学习&body=Check out this article: http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&title=Django 框架和漏洞学习"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&name=Django 框架和漏洞学习&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/2023/05/02/Django%E6%A1%86%E6%9E%B6%E5%92%8C%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/&t=Django 框架和漏洞学习"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2017-2023
+    White Bai
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
